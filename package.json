@@ -1,0 +1,25 @@
+{
+  "name": "hickhub-alexa",
+  "version": "1.0.0",
+  "description": "Node.js AWS Lambda function for the HickHub Alexa skill",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dhickie/hickhub-alexa.git"
+  },
+  "author": "Dominic Hickie",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/dhickie/hickhub-alexa/issues"
+  },
+  "homepage": "https://github.com/dhickie/hickhub-alexa#readme",
+  "devDependencies": {
+    "serverless": "^1.25.0"
+  },
+  "dependencies": {
+    "request": "^2.83.0"
+  }
+}
