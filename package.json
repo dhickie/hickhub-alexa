@@ -20,6 +20,7 @@
     "serverless": "^1.25.0"
   },
   "dependencies": {
+    "nats": "^0.7.24",
     "request": "^2.83.0"
   }
 }
