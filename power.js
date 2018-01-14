@@ -1,26 +1,16 @@
 var messaging = require('./messaging');
+var mapper = require('./mapper');
 var time = require('./time');
 
 exports.handle = function(request, context) {
-    // Build the request we want to make based on whether this is "TurnOn" or "TurnOff"
-    var deviceId = request.directive.endpoint.endpointId;
-    var msg = {
-        path: '',
-        method: 'POST'
-    };
-    
-    var isOn = false;
-    if (request.directive.header.name === 'TurnOn') {
-        isOn = true;
-        msg.path = `api/device/${deviceId}/power/on`;
-    } else {
-        msg.path = `api/device/${deviceId}/power/off`;
-    }
+    // Build the message to send to HickHub
+    var msg = mapper.mapCommand(request);
 
+    // Send the message, and deal with the response
     messaging.request('test', msg, function(response){
         var powerState = 'OFF';
-        if (isOn) {
-            powerState = 'ON';
+        if (response.body.power_on) {
+            powerState = 'ON'
         }
 
         var contextResult = {
@@ -46,4 +36,4 @@ exports.handle = function(request, context) {
 
         context.succeed(alexaResponse);
     });
-}
+};
