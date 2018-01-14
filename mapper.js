@@ -1,6 +1,9 @@
+var time = require('./time');
+
 const stateMap = new Map([
     ['Alexa.PowerController', 'power'],
-    ['Alexa.Speaker', 'volume']
+    ['Alexa.Speaker', 'volume'],
+    ['Alexa.ChannelController', 'channel']
 ]);
 
 const commandMap = new Map([
@@ -8,7 +11,9 @@ const commandMap = new Map([
     ['TurnOff', 'off'],
     ['SetVolume', 'set'],
     ['AdjustVolume', 'adjust'],
-    ['SetMute', 'setmute']
+    ['SetMute', 'setmute'],
+    ['ChangeChannel', 'set'],
+    ['SkipChannels', 'adjust']
 ]);
 
 const interfaceMap = new Map([
@@ -58,6 +63,29 @@ exports.mapCapabilityInterface = function(state) {
     return mapped;
 };
 
+exports.mapDirectiveResponse = function(request, contextResult) {
+    var responseHeader = request.directive.header;
+    responseHeader.name = 'Alexa.Response';
+
+    return {
+        context: contextResult,
+        event: {
+            header: responseHeader
+        },
+        payload: {}
+    };
+}
+
+exports.mapContextProperty = function(namespace, name, value, sampleTime) {
+    return {
+        "namespace": namespace,
+        "name": name,
+        "value": value,
+        "timeOfSample": time.formatDate(sampleTime),
+        "uncertaintyInMilliseconds":0
+    }
+};
+
 function mapCommandBody(request) {
     var namespace = request.directive.header.namespace;
     var name = request.directive.header.name;
@@ -65,9 +93,15 @@ function mapCommandBody(request) {
 
     if (namespace === 'Alexa.Speaker') {
         if (name === 'AdjustVolume' || name === 'SetVolume') {
-            return String(payload.volume);
+            return JSON.stringify(payload.volume);
         } else if (name === 'SetMute') {
-            return String(payload.mute);
+            return JSON.stringify(payload.mute);
+        }
+    } else if (namespace === 'Alexa.ChannelController') {
+        if (name === 'ChangeChannel') {
+            return JSON.stringify(Number(payload.channel.number));
+        } else if (name === 'SkipChannels') {
+            return JSON.stringify(payload.channelCount);
         }
     }
 

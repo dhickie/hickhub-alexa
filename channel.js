@@ -2,21 +2,25 @@ var messaging = require('./messaging');
 var mapper = require('./mapper');
 
 exports.handle = function(request, context) {
-    // Build the message to send to HickHub
+    // Build the message to be sent to HickHub
     var msg = mapper.mapCommand(request);
 
     // Send the message, and deal with the response
     messaging.request('test', msg, function(response){
-        var powerState = 'OFF';
-        if (response.body.power_on) {
-            powerState = 'ON'
-        }
+        var sampleTime = Date.now();
+        var body = JSON.parse(response.body);
+
+        var value = {
+            "number": body.channel_number,
+            "callSign": body.channel_name,
+            "affiliateCallSign": body.channel_name
+        };
 
         var contextResult = {
-            properties:[mapper.mapContextProperty('Alexa.PowerController', 'powerState', powerState, Date.now())]
+            properties:[mapper.mapContextProperty('Alexa.ChannelController', 'channel', value, Date.now())]
         };
 
         var alexaResponse = mapper.mapDirectiveResponse(request, contextResult);
         context.succeed(alexaResponse);
     });
-};
+}

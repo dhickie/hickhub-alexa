@@ -13,32 +13,14 @@ exports.handle = function(request, context) {
         var body = JSON.parse(response.body);
 
         var contextProperties = [];
-        contextProperties.push(createContextProperty('volume', body.volume, sampleTime));
-        contextProperties.push(createContextProperty('muted', body.is_muted, sampleTime));
+        contextProperties.push(mapper.mapContextProperty('Alexa.Speaker', 'volume', body.volume, sampleTime));
+        contextProperties.push(mapper.mapContextProperty('Alexa.Speaker', 'muted', body.is_muted, sampleTime));
 
-        var responseHeader = request.directive.header;
-        responseHeader.name = "Alexa.Response";
-
-        var alexaResponse = {
-            context: {
-                properties: contextProperties
-            },
-            event: {
-                header: responseHeader
-            },
-            payload:{}
+        var contextResult = {
+            properties: contextProperties
         };
 
+        var alexaResponse = mapper.mapDirectiveResponse(request, contextResult);
         context.succeed(alexaResponse);
     });
 };
-
-function createContextProperty(name, value, sampleTime) {
-    return {
-        "namespace": "Alexa.Speaker",
-        "name": name,
-        "value": value,
-        "timeOfSample": time.formatDate(sampleTime),
-        "uncertaintyInMilliseconds":0
-    }
-}
