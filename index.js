@@ -4,6 +4,7 @@ const power = require('./power');
 const volume = require('./volume');
 const channel = require('./channel');
 const playback = require('./playback');
+const input = require('./input');
 
 exports.handler = (request, context) => {
     var namespace = request.directive.header.namespace;
@@ -20,5 +21,7 @@ exports.handler = (request, context) => {
         channel.handle(request, context);
     } else if (namespace === 'Alexa.PlaybackController') {
         playback.handle(request, context);
+    } else if (namespace === 'Alexa.InputController') {
+        input.handle(request, context);
     }
 };

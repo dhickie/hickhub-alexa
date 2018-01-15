@@ -4,14 +4,16 @@ const stateMap = new Map([
     ['Alexa.PowerController', 'power'],
     ['Alexa.Speaker', 'volume'],
     ['Alexa.ChannelController', 'channel'],
-    ['Alexa.PlaybackController', 'playback']
+    ['Alexa.PlaybackController', 'playback'],
+    ['Alexa.InputController', 'input']
 ]);
 
 const interfaceMap = new Map([
     ['power', 'Alexa.PowerController'],
     ['volume', 'Alexa.Speaker'],
     ['channel', 'Alexa.ChannelController'],
-    ['playback', 'Alexa.PlaybackController']
+    ['playback', 'Alexa.PlaybackController'],
+    ['input', 'Alexa.InputController']
 ]);
 
 const operationMap = new Map([
@@ -36,7 +38,8 @@ const commandMap = new Map([
     ['Play', 'play'],
     ['Pause', 'pause'],
     ['Rewind', 'rewind'],
-    ['FastForward', 'fastforward']
+    ['FastForward', 'fastforward'],
+    ['SelectInput', 'set']
 ]);
 
 exports.mapCommand = function(request) {
@@ -142,6 +145,10 @@ function mapCommandBody(request) {
             return JSON.stringify(Number(payload.channel.number));
         } else if (name === 'SkipChannels') {
             return JSON.stringify(payload.channelCount);
+        }
+    } else if (namespace === 'Alexa.InputController') {
+        if (name === 'SelectInput') {
+            return JSON.stringify(payload.input);
         }
     }
 
