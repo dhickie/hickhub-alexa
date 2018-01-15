@@ -47,7 +47,10 @@ function assembleCapabilities(capabilities) {
 
     var keys = Object.keys(capabilities);
     keys.forEach(function(capability) {
-        assembled.push(mapper.mapCapabilityInterface(capability));
+        var mappedCapability = mapper.mapCapabilityInterface(capability, capabilities[capability]);
+        if (mappedCapability) {
+            assembled.push(mappedCapability);
+        }
     });
 
     return assembled;

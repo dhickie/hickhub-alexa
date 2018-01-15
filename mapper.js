@@ -3,8 +3,27 @@ var time = require('./time');
 const stateMap = new Map([
     ['Alexa.PowerController', 'power'],
     ['Alexa.Speaker', 'volume'],
-    ['Alexa.ChannelController', 'channel']
+    ['Alexa.ChannelController', 'channel'],
+    ['Alexa.PlaybackController', 'playback']
 ]);
+
+const interfaceMap = new Map([
+    ['power', 'Alexa.PowerController'],
+    ['volume', 'Alexa.Speaker'],
+    ['channel', 'Alexa.ChannelController'],
+    ['playback', 'Alexa.PlaybackController']
+]);
+
+const operationMap = new Map([
+    ['play', 'Play'],
+    ['pause', 'Pause'],
+    ['rewind', 'Rewind'],
+    ['fastforward', 'FastForward'],
+    ['stop', 'Stop'],
+    ['startover', 'StartOver'],
+    ['previous', 'Previous'],
+    ['next', 'Next']
+])
 
 const commandMap = new Map([
     ['TurnOn', 'on'],
@@ -13,13 +32,11 @@ const commandMap = new Map([
     ['AdjustVolume', 'adjust'],
     ['SetMute', 'setmute'],
     ['ChangeChannel', 'set'],
-    ['SkipChannels', 'adjust']
-]);
-
-const interfaceMap = new Map([
-    ["power", 'Alexa.PowerController'],
-    ["volume", 'Alexa.Speaker'],
-    ["channel", 'Alexa.ChannelController']
+    ['SkipChannels', 'adjust'],
+    ['Play', 'play'],
+    ['Pause', 'pause'],
+    ['Rewind', 'rewind'],
+    ['FastForward', 'fastforward']
 ]);
 
 exports.mapCommand = function(request) {
@@ -46,7 +63,7 @@ exports.mapCommand = function(request) {
     };
 };
 
-exports.mapCapabilityInterface = function(state) {
+exports.mapCapabilityInterface = function(state, capabilities) {
     var interfaceName;
     if (interfaceMap.has(state)) {
         interfaceName = interfaceMap.get(state);
@@ -54,11 +71,34 @@ exports.mapCapabilityInterface = function(state) {
         interfaceName = '???';
     }
 
+    // There may be other required properties depending on what interface we're dealing with
+    var requiredSupportedOps = false;
+    var supportedOperations = [];
+    if (interfaceName === 'Alexa.PlaybackController') {
+        requiredSupportedOps = true;
+        console.log(capabilities);
+        capabilities.forEach(function(capability) {
+            if (operationMap.has(capability)) {
+                supportedOperations.push(operationMap.get(capability));
+            }
+        });
+    }
+
+    // If supported operations have to be specified, and there aren't any, then just
+    // return null
+    if (requiredSupportedOps && supportedOperations.length === 0) {
+        return null;
+    }
+
     var mapped = {
-        "type":"AlexaInterface",
-        "interface":interfaceName,
-        "version":"3"
+        type: "AlexaInterface",
+        interface: interfaceName,
+        version:"3"
     };
+
+    if (requiredSupportedOps) {
+        mapped.supportedOperations = supportedOperations;
+    }
 
     return mapped;
 };

@@ -1,6 +1,5 @@
 var messaging = require('./messaging');
 var mapper = require('./mapper');
-var time = require('./time');
 
 exports.handle = function(request, context) {
     // Build the message to sent to HickHub

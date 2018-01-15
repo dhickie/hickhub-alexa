@@ -3,16 +3,22 @@ const discovery = require('./discovery');
 const power = require('./power');
 const volume = require('./volume');
 const channel = require('./channel');
+const playback = require('./playback');
 
 exports.handler = (request, context) => {
-    if (request.directive.header.namespace === 'Alexa.Discovery' && request.directive.header.name === 'Discover') {
+    var namespace = request.directive.header.namespace;
+    var name = request.directive.header.name;
+
+    if (namespace === 'Alexa.Discovery' && name === 'Discover') {
         // Handle the discovery request
         discovery.handle(request, context);
-    } else if (request.directive.header.namespace === 'Alexa.PowerController') {
+    } else if (namespace === 'Alexa.PowerController') {
         power.handle(request, context);
-    } else if (request.directive.header.namespace === 'Alexa.Speaker') {
+    } else if (namespace === 'Alexa.Speaker') {
         volume.handle(request, context);
-    } else if (request.directive.header.namespace === 'Alexa.ChannelController') {
+    } else if (namespace === 'Alexa.ChannelController') {
         channel.handle(request, context);
+    } else if (namespace === 'Alexa.PlaybackController') {
+        playback.handle(request, context);
     }
 };
