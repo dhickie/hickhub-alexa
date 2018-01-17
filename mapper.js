@@ -25,7 +25,7 @@ const operationMap = new Map([
     ['startover', 'StartOver'],
     ['previous', 'Previous'],
     ['next', 'Next']
-])
+]);
 
 const commandMap = new Map([
     ['TurnOn', 'on'],
@@ -117,7 +117,7 @@ exports.mapDirectiveResponse = function(request, contextResult) {
         },
         payload: {}
     };
-}
+};
 
 exports.mapContextProperty = function(namespace, name, value, sampleTime) {
     return {
@@ -126,7 +126,31 @@ exports.mapContextProperty = function(namespace, name, value, sampleTime) {
         "value": value,
         "timeOfSample": time.formatDate(sampleTime),
         "uncertaintyInMilliseconds":0
+    };
+};
+
+exports.mapErrorResponse = function(request, errorType, errorMessage) {
+    var header = request.directive.header;
+    header.namespace = 'Alexa';
+    header.name = 'ErrorResponse';
+
+    var response = {
+        event: {
+            header: header,
+            payload: {
+                type: errorType,
+                message: errorMessage
+            }
+        }
+    };
+
+    if (request.directive.endpoint) {
+        response.event.endpoint = {
+            endpointId: request.directive.endpoint.endpointId
+        };
     }
+
+    return response;
 };
 
 function mapCommandBody(request) {
@@ -157,3 +181,4 @@ function mapCommandBody(request) {
 
     return '';
 }
+

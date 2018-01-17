@@ -6,7 +6,7 @@ exports.handle = function(request, context) {
     var msg = mapper.mapCommand(request);
 
     // Send the message, and deal with the response
-    messaging.request('test', msg, function(response) {
+    messaging.request(request, context, 'test', msg, function(response) {
         // Create the context properties with the new volume state
         var sampleTime = Date.now();
         var body = JSON.parse(response.body);

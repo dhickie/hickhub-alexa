@@ -9,7 +9,7 @@ exports.handle = function(request, context) {
     };
 
     console.info('Publishing discovery request');
-    messaging.request('test', msg, function(response){
+    messaging.request(request, context, 'test', msg, function(response){
         var devices = JSON.parse(response.body);
 
         // Assemble the endpoints

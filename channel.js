@@ -6,8 +6,7 @@ exports.handle = function(request, context) {
     var msg = mapper.mapCommand(request);
 
     // Send the message, and deal with the response
-    messaging.request('test', msg, function(response){
-        var sampleTime = Date.now();
+    messaging.request(request, context, 'test', msg, function(response){
         var body = JSON.parse(response.body);
 
         var value = {
