@@ -1,4 +1,5 @@
 const NATS = require('nats');
+const mapper = require('./mapper');
 const discovery = require('./discovery');
 const power = require('./power');
 const volume = require('./volume');
@@ -23,5 +24,9 @@ exports.handler = (request, context) => {
         playback.handle(request, context);
     } else if (namespace === 'Alexa.InputController') {
         input.handle(request, context);
+    } else {
+        // Return an error if an unknown directive is received
+        var response = mapper.mapErrorResponse(request, 'INVALID_DIRECTIVE', 'Received unsupported directive: ' + namespace);
+        context.success(response);
     }
 };
