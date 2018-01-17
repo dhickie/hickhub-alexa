@@ -142,7 +142,10 @@ function mapCommandBody(request) {
         }
     } else if (namespace === 'Alexa.ChannelController') {
         if (name === 'ChangeChannel') {
-            return JSON.stringify(Number(payload.channel.number));
+            return JSON.stringify({
+                channel_number: Number(payload.channel.number),
+                channel_name: payload.channel.callSign
+            });
         } else if (name === 'SkipChannels') {
             return JSON.stringify(payload.channelCount);
         }
