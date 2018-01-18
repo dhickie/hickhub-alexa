@@ -108,12 +108,16 @@ exports.mapCapabilityInterface = function(state, capabilities) {
 
 exports.mapDirectiveResponse = function(request, contextResult) {
     var responseHeader = request.directive.header;
-    responseHeader.name = 'Alexa.Response';
+    responseHeader.namespace = 'Alexa';
+    responseHeader.name = 'Response';
 
     return {
         context: contextResult,
         event: {
             header: responseHeader
+        },
+        endpoint: {
+            endpointId: request.directive.endpoint.endpointId
         },
         payload: {}
     };

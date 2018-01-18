@@ -33,7 +33,7 @@ function assembleEndpoint(device) {
     var endpoint = {
         "endpointId": device.id,
         "manufacturerName":"LG",
-        "friendlyName":"",
+        "friendlyName":"TV",
         "description":"LG WebOS Smart TV",
         "displayCategories":[device.type],
         "capabilities":assembleCapabilities(device.capabilities)
