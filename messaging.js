@@ -26,9 +26,13 @@ exports.request = function(request, context, topic, message, callback) {
             errorMessage = "Unable to reach target HickHub.";
         } else {
             var resp = JSON.parse(response);
-            if (resp.status !== "200 OK") {
+            if (String(resp.status).startsWith("400")) {
                 console.error('Response was an error response: ' + resp.body);
-
+                errorThrown = true;
+                errorType = 'INVALID_DIRECTIVE'
+                errorMessage = resp.body
+            } else if (!String(resp.status).startsWith("200")) {
+                console.error('Response was an error response: ' + resp.body);
                 errorThrown = true;
                 errorType = 'INTERNAL_ERROR';
                 errorMessage = resp.body;
