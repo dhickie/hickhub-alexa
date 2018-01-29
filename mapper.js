@@ -157,6 +157,14 @@ exports.mapErrorResponse = function(request, errorType, errorMessage) {
     return response;
 };
 
+exports.getAuthToken = function(request, isDiscovery) {
+    if (isDiscovery) {
+        return request.directive.payload.scope.token;
+    } else {
+        return request.directive.endpoint.scope.token;
+    }
+};
+
 function mapCommandBody(request) {
     var namespace = request.directive.header.namespace;
     var name = request.directive.header.name;

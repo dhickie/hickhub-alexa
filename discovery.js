@@ -1,4 +1,4 @@
-const messaging = require('./messaging');
+const client = require('./apiclient');
 const mapper = require('./mapper');
 
 exports.handle = function(request, context) {
@@ -7,9 +7,10 @@ exports.handle = function(request, context) {
         path: 'devices',
         method: 'GET'
     };
+    var authToken = mapper.getAuthToken(request, true);
 
     console.info('Publishing discovery request');
-    messaging.request(request, context, 'test', msg, function(response){
+    client.request(request, context, msg, authToken, function(response){
         var devices = JSON.parse(response.body);
 
         // Assemble the endpoints
