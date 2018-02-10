@@ -2,7 +2,6 @@ const request = require('request')
 const mapper = require('./mapper')
 
 exports.request = function(req, context, message, authToken, callback) {
-    var nats = NATS.connect(process.env.NATS_Server);
     var msg = JSON.stringify(message);
 
     // Build the request options
@@ -11,7 +10,7 @@ exports.request = function(req, context, message, authToken, callback) {
         method: 'POST',
         body: msg,
         headers: {
-            'Authorization': authToken
+            'Authorization': 'Bearer ' + authToken
         },
         timeout: 5000
     };
@@ -30,7 +29,7 @@ exports.request = function(req, context, message, authToken, callback) {
             errorType = 'BRIDGE_UNREACHABLE';
             errorMessage = 'Unable to reach target HickHub.';
         } else {
-            var resp = JSON.parse(body)
+            var resp = JSON.parse(body);
             if (String(resp.status).startsWith('400')) {
                 console.error('Response was a bad request response: ' + resp.body);
                 errorThrown = true;
